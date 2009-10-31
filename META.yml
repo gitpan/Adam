@@ -22,13 +22,15 @@ no_index:
     - t
 requires:
   MooseX::Aliases: 0.05
+  MooseX::Declare: 0.31
   MooseX::Getopt: 0.22
   MooseX::LogDispatch: 1.200
   MooseX::POE: 0.09
   MooseX::SimpleConfig: 0.03
   POE::Component::IRC: 6.12
+  aliased: 0.30
   namespace::autoclean: 0.09
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/perigrin/adam-bot-framework.git
-version: 0.05
+version: 0.06

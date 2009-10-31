@@ -1,5 +1,5 @@
 package Adam;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 use MooseX::POE;
 use namespace::autoclean;
 
@@ -8,7 +8,6 @@ use POE qw(
   Component::IRC::State
   Component::IRC::Plugin::PlugMan
   Component::IRC::Plugin::Connector
-  Component::IRC::Plugin::Console
   Component::IRC::Plugin::ISupport
   Component::IRC::Plugin::NickReclaim
   Component::IRC::Plugin::BotAddressed
@@ -16,19 +15,22 @@ use POE qw(
 );
 
 use MooseX::Aliases;
+use Adam::Logger::Default;
 
 with qw(
   MooseX::SimpleConfig
   MooseX::Getopt
-  MooseX::LogDispatch::Levels
 );
 
 has logger => (
-    isa        => 'Log::Dispatch::Config',
-    is         => 'rw',
+    does       => 'Adam::Logger::API',
+    is         => 'ro',
     traits     => ['NoGetopt'],
     lazy_build => 1,
+    handles    => 'Adam::Logger::API',
 );
+
+sub _build_logger { Adam::Logger::Default->new() }
 
 has nickname => (
     isa      => 'Str',
@@ -85,10 +87,32 @@ has owner => (
 
 sub default_owner { 'perigrin!~perigrin@217.168.150.167' }
 
+has username => (
+    isa      => 'Str',
+    accessor => 'get_username',
+    traits   => ['Getopt'],
+    cmd_flag => 'username',
+    builder  => 'default_username',
+);
+
+sub default_username { 'adam' }
+
+has password => (
+    isa      => 'Str',
+    accessor => 'get_password',
+    traits   => ['Getopt'],
+    cmd_flag => 'password',
+    builder  => 'default_password',
+);
+
+sub default_password { '' }
+
 has flood => (
-    isa     => 'Bool',
-    reader  => 'can_flood',
-    builder => 'default_flood',
+    isa      => 'Bool',
+    reader   => 'can_flood',
+    traits   => ['Getopt'],
+    cmd_flag => 'flood',
+    builder  => 'default_flood',
 );
 
 sub default_flood { 0 }
@@ -113,13 +137,8 @@ sub core_plugins {
         'Core_AutoJoin'     => POE::Component::IRC::Plugin::AutoJoin->new(
             Channels => { map { $_ => '' } @{ $_[0]->get_channels } },
         ),
-
-# 'Core_Console'      => POE::Component::IRC::Plugin::Console->new(
-#    bindport => 6669,
-#    password => 'super^star',
-#  ),
-# 'Core_NickReclaim'  => POE::Component::IRC::Plugin::NickReclaim->new(poll => 30),
-
+        'Core_NickReclaim' =>
+          POE::Component::IRC::Plugin::NickReclaim->new( poll => 30 ),
     };
 }
 
@@ -129,14 +148,45 @@ sub default_plugins {
     return { %{ $_[0]->core_plugins }, %{ $_[0]->custom_plugins } };
 }
 
-before 'START' => sub {
-    my ($self) = @_;
-    my $pm = POE::Component::IRC::Plugin::PlugMan->new(
-        botowner => $self->get_owner,
+has plugin_manager => (
+    isa        => 'POE::Component::IRC::Plugin::PlugMan',
+    is         => 'ro',
+    lazy_build => 1,
+);
+
+sub _build_plugin_manager {
+    POE::Component::IRC::Plugin::PlugMan->new(
+        botowner => $_[0]->get_owner,
         debug    => 1
     );
-    $self->plugin_add( 'PlugMan' => $pm );
+}
+
+before 'START' => sub {
+    my ($self) = @_;
+    $self->plugin_add( 'PlugMan' => $self->plugin_manager );
 };
+
+has poco_irc_args => (
+    isa      => 'HashRef',
+    accessor => 'get_poco_irc_args',
+    traits   => [ 'Hash', 'Getopt' ],
+    cmd_flag => 'extra_args',
+    builder  => 'default_poco_irc_args',
+);
+
+sub default_poco_irc_args {
+    {};
+}
+
+has poco_irc_options => (
+    isa      => 'HashRef',
+    accessor => 'get_poco_irc_options',
+    traits   => [ 'Hash', 'Getopt' ],
+    cmd_flag => 'extra_args',
+    builder  => 'default_poco_irc_options',
+);
+
+sub default_poco_irc_options { { trace => 0 } }
 
 has _irc => (
     isa        => 'POE::Component::IRC',
@@ -151,12 +201,14 @@ has _irc => (
 
 sub _build__irc {
     POE::Component::IRC::State->spawn(
-        Nick    => $_[0]->get_nickname,
-        Server  => $_[0]->get_server,
-        Port    => $_[0]->get_port,
-        Ircname => $_[0]->get_nickname,
-        Options => { trace => 0 },
-        Flood   => $_[0]->can_flood,
+        Nick     => $_[0]->get_nickname,
+        Server   => $_[0]->get_server,
+        Port     => $_[0]->get_port,
+        Ircname  => $_[0]->get_nickname,
+        Options  => $_[0]->get_poco_irc_options,
+        Flood    => $_[0]->can_flood,
+        Username => $_[0]->get_username,
+        Password => $_[0]->get_password,
     );
 }
 
@@ -167,25 +219,26 @@ sub privmsg {
 
 sub START {
     my ( $self, $heap ) = @_[ OBJECT, HEAP ];
-
-    # We get the session ID of the component from the object
-    # and register and connect to the specified server.
     $poe_kernel->post( $self->irc_session_id => register => 'all' );
     $poe_kernel->post( $self->irc_session_id => connect  => {} );
     $self->info( 'connecting to ' . $self->get_server . ':' . $self->get_port );
     return;
 }
 
+sub load_plugin {
+    my ( $self, $name, $plugin ) = @_;
+    $self->plugin_manager->load( $name => $plugin, bot => $self );
+}
+
 event irc_plugin_add => sub {
     my ( $self, $desc, $plugin ) = @_[ OBJECT, ARG0, ARG1 ];
     $self->info("loaded plugin: $desc");
     if ( $desc eq 'PlugMan' ) {
-        my $manager = $plugin;
         $self->debug("loading other plugins");
         for my $name ( sort $self->plugin_names ) {
             $self->debug("loading $name");
             $plugin = $self->get_plugin($name);
-            $manager->load( $name => $plugin, bot => $self );
+            $self->load_plugin( $name => $plugin );
         }
     }
 };
@@ -220,8 +273,6 @@ sub run {
 
 1;    # Magic true value required at end of module
 
-
-
 __END__
 
 =head1 NAME
@@ -255,6 +306,14 @@ The IRC server to connect to.
 
 The port for the IRC server, defaults to 6667
 
+=head2 username(Str)
+
+The username which we should use
+
+=head2 password(Str)
+
+The server password which we shoulduse
+
 =head2 channels (ArrayRef[Str])
 
 IRC channels to connect to.
@@ -273,6 +332,10 @@ Disable flood protection. Defaults to False.
 
 A list of plugins associated with the IRC bot. See L<Moses::Plugin> for more
 details.
+
+=head2 extra_args (HashRef)
+
+A list of extra arguments to pass to the irc constructor.
 
 =head1 METHODS
 

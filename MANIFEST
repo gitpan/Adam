@@ -1,4 +1,5 @@
 Changes
+ex/declare.pl
 ex/sample.pl
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -13,8 +14,13 @@ inc/Module/Install/Repository.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Adam.pm
+lib/Adam/Logger/API.pm
+lib/Adam/Logger/Default.pm
 lib/Adam/Plugin.pm
 lib/Moses.pm
+lib/Moses/Declare.pm
+lib/Moses/Declare/Syntax/BotKeyword.pm
+lib/Moses/Declare/Syntax/EventKeyword.pm
 lib/Moses/Plugin.pm
 lib/oses.pm
 Makefile.PL
@@ -22,3 +28,6 @@ MANIFEST			This list of files
 META.yml
 t/00.load.t
 t/01.simple.t
+t/02.override.t
+t/03.logger.t
+t/04.declare.t
