@@ -1,5 +1,7 @@
 Changes
 ex/declare.pl
+ex/ncbot.pl
+ex/rt-plugin.pl
 ex/sample.pl
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -21,6 +23,7 @@ lib/Moses.pm
 lib/Moses/Declare.pm
 lib/Moses/Declare/Syntax/BotKeyword.pm
 lib/Moses/Declare/Syntax/EventKeyword.pm
+lib/Moses/Declare/Syntax/PluginKeyword.pm
 lib/Moses/Plugin.pm
 lib/oses.pm
 Makefile.PL
