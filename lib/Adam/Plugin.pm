@@ -18,12 +18,12 @@ has bot => (
     ],
 );
 
-has events => (
-    isa        => 'ArrayRef',
-    is         => 'ro',
-    auto_deref => 1,
-    lazy_build => 1,
-    builder    => 'default_events',
+has _events => (
+    isa     => 'ArrayRef',
+    is      => 'ro',
+    traits  => ['Array'],
+    builder => 'default_events',
+    handles => { _list_events => 'elements' }
 );
 
 sub default_events {
@@ -32,7 +32,7 @@ sub default_events {
 
 sub PCI_register {
     my ( $self, $irc ) = splice @_, 0, 2;
-    $irc->plugin_register( $self, 'SERVER', $self->events );
+    $irc->plugin_register( $self, 'SERVER', $self->_list_events );
     return 1;
 }
 
