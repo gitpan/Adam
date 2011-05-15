@@ -1,9 +1,12 @@
 package Moses;
+BEGIN {
+  $Moses::VERSION = '0.90';
+}
+# ABSTRACT: A framework for building IRC bots quickly and easily.
+# Dist::Zilla: +PodWeaver
 use MooseX::POE ();
 use Moose::Exporter;
 use Adam;
-
-our $VERSION = $Adam::VERSION;
 
 Moose::Exporter->setup_import_methods(
     with_caller => [
@@ -109,7 +112,9 @@ sub poco_irc_options {
 }
 
 1;
-__END__
+
+
+=pod
 
 =head1 NAME
 
@@ -117,7 +122,7 @@ Moses - A framework for building IRC bots quickly and easily.
 
 =head1 VERSION
 
-This documentation refers to version 0.04.
+version 0.90
 
 =head1 SYNOPSIS
 
@@ -187,14 +192,13 @@ Disable flood protection. Defaults to False.
 Supply a list of channels for the bot to join upon connecting.
 
 =head2 plugins (@plugins)
- 
+
 Extra L<POE::Component::IRC::Plugin|POE::Component::IRC::Plugin> objects or
 class names to load into the bot.
 
 =head2 extra_args (HashRef)
 
 A list of extra arguments to pass to the irc constructor.
-
 
 =head1 DEPENDENCIES
 
@@ -208,16 +212,31 @@ L<MooseX::LogDispatch|MooseX::LogDispatch>
 
 =head1 BUGS AND LIMITATIONS
 
-None known currently, please email the author if you find any.
+None known currently, please report bugs to L<https://rt.cpan.org/Ticket/Create.html?Queue=Adam>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Chris Prather (chris@prather.org)
+=over 4
 
-=head1 LICENCE
+=item *
 
-Copyright 2007-2009 by Chris Prather.
+Chris Prather <chris@prather.org>
 
-This software is free.  It is licensed under the same terms as Perl itself.
+=item *
+
+Torsten Raudssus <torsten@raudssus.de> L<http://www.raudssus.de/>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Chris Prather, Torsten Raudssus.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
+
+
+__END__
+

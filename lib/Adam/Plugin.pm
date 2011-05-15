@@ -1,4 +1,9 @@
 package Adam::Plugin;
+BEGIN {
+  $Adam::Plugin::VERSION = '0.90';
+}
+# ABSTRACT: A base class for Adam/Moses plugins
+# Dist::Zilla: +PodWeaver
 use Moose;
 use namespace::autoclean;
 
@@ -32,7 +37,9 @@ sub default_events {
 
 sub PCI_register {
     my ( $self, $irc ) = splice @_, 0, 2;
-    $irc->plugin_register( $self, 'SERVER', $self->_list_events );
+    my @events = $self->_list_events;
+    $irc->plugin_register($self, 'SERVER', grep { /^S_/ } @events);
+    $irc->plugin_register($self, 'USER', grep { /^U_/ } @events);
     return 1;
 }
 
@@ -48,11 +55,17 @@ sub _default {
 
 1;
 
-__END__
+
+
+=pod
 
 =head1 NAME
 
 Adam::Plugin - A base class for Adam/Moses plugins
+
+=head1 VERSION
+
+version 0.90
 
 =head1 DESCRIPTION
 
@@ -62,28 +75,40 @@ The Adam::Plugin class implements a base class for Adam/Moses IRC bot plugins.
 
 =head2 bot
 
-=head2 events
-
 =head1 METHODS
 
 =head2 default_events
 
 The default events that this plugin will listen to. It defaults to all methods
-prefixed with 'S_' in the current class.
-
+prefixed with 'S_' or 'U_' in the current class.
 
 =head1 BUGS AND LIMITATIONS
 
-None known currently, please email the author if you find any.
+None known currently, please report bugs to L<https://rt.cpan.org/Ticket/Create.html?Queue=Adam>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Chris Prather (perigrin@domain.tld)
+=over 4
 
-=head1 LICENCE
+=item *
 
-Copyright 2009 by Chris Prather.
+Chris Prather <chris@prather.org>
 
-This software is free.  It is licensed under the same terms as Perl itself.
+=item *
+
+Torsten Raudssus <torsten@raudssus.de> L<http://www.raudssus.de/>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Chris Prather, Torsten Raudssus.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
+
+
+__END__
+

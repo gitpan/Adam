@@ -1,4 +1,5 @@
 use MooseX::Declare;
+# Dist::Zilla: -PodWeaver
 
 class Moses::Declare::Syntax::PluginKeyword extends
   MooseX::Declare::Syntax::Keyword::Class {

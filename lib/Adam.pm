@@ -1,5 +1,9 @@
 package Adam;
-our $VERSION = '0.09';
+BEGIN {
+  $Adam::VERSION = '0.90';
+}
+# ABSTRACT: The patriarch of IRC Bots
+# Dist::Zilla: +PodWeaver
 use MooseX::POE;
 use namespace::autoclean;
 
@@ -275,7 +279,9 @@ sub run {
 
 1;    # Magic true value required at end of module
 
-__END__
+
+
+=pod
 
 =head1 NAME
 
@@ -283,7 +289,7 @@ Adam - The patriarch of IRC Bots
 
 =head1 VERSION
 
-This documentation refers to version 0.05.
+version 0.90
 
 =head1 SYNOPSIS
 
@@ -360,16 +366,31 @@ L<MooseX::LogDispatch|MooseX::LogDispatch>
 
 =head1 BUGS AND LIMITATIONS
 
-None known currently, please email the author if you find any.
+None known currently, please report bugs to L<https://rt.cpan.org/Ticket/Create.html?Queue=Adam>
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-Chris Prather (chris@prather.org)
+=over 4
 
-=head1 LICENCE
+=item *
 
-Copyright 2007-2009 by Chris Prather.
+Chris Prather <chris@prather.org>
 
-This software is free.  It is licensed under the same terms as Perl itself.
+=item *
+
+Torsten Raudssus <torsten@raudssus.de> L<http://www.raudssus.de/>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Chris Prather, Torsten Raudssus.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
+
+
+__END__
+
