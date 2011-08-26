@@ -1,6 +1,6 @@
 package Adam::Logger::API;
 BEGIN {
-  $Adam::Logger::API::VERSION = '0.90';
+  $Adam::Logger::API::VERSION = '0.91';
 }
 # ABSTRACT: API Role for the Adam logger
 # Dist::Zilla: +PodWeaver
@@ -30,7 +30,7 @@ Adam::Logger::API - API Role for the Adam logger
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 AUTHORS
 

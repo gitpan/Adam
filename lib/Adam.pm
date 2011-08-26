@@ -1,6 +1,6 @@
 package Adam;
 BEGIN {
-  $Adam::VERSION = '0.90';
+  $Adam::VERSION = '0.91';
 }
 # ABSTRACT: The patriarch of IRC Bots
 # Dist::Zilla: +PodWeaver
@@ -289,7 +289,7 @@ Adam - The patriarch of IRC Bots
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 SYNOPSIS
 

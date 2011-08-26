@@ -1,6 +1,6 @@
 package Moses::Plugin;
 BEGIN {
-  $Moses::Plugin::VERSION = '0.90';
+  $Moses::Plugin::VERSION = '0.91';
 }
 # ABSTRACT: Sugar for Moses Plugins
 # Dist::Zilla: +PodWeaver
@@ -49,7 +49,7 @@ Moses::Plugin - Sugar for Moses Plugins
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 DESCRIPTION
 

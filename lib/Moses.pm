@@ -1,6 +1,6 @@
 package Moses;
 BEGIN {
-  $Moses::VERSION = '0.90';
+  $Moses::VERSION = '0.91';
 }
 # ABSTRACT: A framework for building IRC bots quickly and easily.
 # Dist::Zilla: +PodWeaver
@@ -122,7 +122,7 @@ Moses - A framework for building IRC bots quickly and easily.
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 SYNOPSIS
 

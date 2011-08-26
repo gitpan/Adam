@@ -30,10 +30,11 @@ my %WriteMakefileArgs = (
     'MooseX::POE' => '0.214',
     'MooseX::SimpleConfig' => '0.09',
     'POE::Component::IRC' => '6.64',
+    'Sub::Identify' => '0.04',
     'aliased' => '0.30',
     'namespace::autoclean' => '0.12'
   },
-  'VERSION' => '0.90',
+  'VERSION' => '0.91',
   'test' => {
     'TESTS' => 't/*.t'
   }

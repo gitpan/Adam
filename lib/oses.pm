@@ -1,6 +1,6 @@
 package oses;
 BEGIN {
-  $oses::VERSION = '0.90';
+  $oses::VERSION = '0.91';
 }
 # ABSTRACT: A shortcut in the fashion of oose.pm
 # Dist::Zilla: +PodWeaver
@@ -24,7 +24,7 @@ oses - A shortcut in the fashion of oose.pm
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 SYNOPSIS
 

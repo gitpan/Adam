@@ -1,6 +1,6 @@
 package Adam::Logger::Default;
 BEGIN {
-  $Adam::Logger::Default::VERSION = '0.90';
+  $Adam::Logger::Default::VERSION = '0.91';
 }
 # ABSTRACT: Default logger for Adam bots
 # Dist::Zilla: +PodWeaver
@@ -22,7 +22,7 @@ Adam::Logger::Default - Default logger for Adam bots
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 AUTHORS
 
